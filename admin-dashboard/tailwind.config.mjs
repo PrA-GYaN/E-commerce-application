@@ -54,7 +54,26 @@ export default {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		animation: {
+		'gradient-x': 'gradient-x 5s ease infinite',
+		'rotate': 'rotate 10s linear infinite',
+		'float': 'float 6s ease-in-out infinite',
+		},
+		keyframes: {
+		'gradient-x': {
+			'0%, 100%': { 'background-position': '0% 50%' },
+			'50%': { 'background-position': '100% 50%' },
+		},
+		'rotate': {
+			'0%': { transform: 'rotate(0deg)' },
+			'100%': { transform: 'rotate(360deg)' },
+		},
+		'float': {
+			'0%, 100%': { transform: 'translateY(0)' },
+			'50%': { transform: 'translateY(-20px)' },
+		},
+		}
   	}
   },
   plugins: [require("tailwindcss-animate")],

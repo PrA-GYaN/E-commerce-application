@@ -6,12 +6,9 @@ import {
 } from "@/components/ui/card";
 import { FaCogs, FaUsers, FaChartLine } from 'react-icons/fa';
 
-// Optionally, if Typography is part of a custom library, import it like:
-// import Typography from "@/components/ui/typography";
-
 export default function Welcome() {
   return (
-    <div className="bg-gradient-to-r from-blue-500 via-teal-400 to-indigo-600 p-10 min-h-screen flex flex-col items-center">
+    <div className="bg-gradient-to-r from-blue-500 via-teal-400 to-indigo-600 p-10 flex flex-col items-center">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full md:w-3/4 lg:w-2/3 text-center">
         <h2 className="text-3xl font-bold text-gray-800">
           Welcome to the Admin Dashboard!
