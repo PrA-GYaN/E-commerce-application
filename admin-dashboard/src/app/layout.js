@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster"
 
 const clerkFrontendApi = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -27,6 +28,7 @@ export default function RootLayout({ children }) {
       >
         <ClerkProvider frontendApi={clerkFrontendApi}>
           {children}
+          <Toaster />
         </ClerkProvider>
       </body>
     </html>

@@ -12,8 +12,6 @@ import Dashboard from './dashboard/page'
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body>
           <SignedOut>
             {/* <SignInButton /> */}
             <Login  />
@@ -24,8 +22,6 @@ export default function RootLayout({ children }) {
             <Dashboard/>
           </SignedIn>
           {children}
-        </body>
-      </html>
     </ClerkProvider>
   )
 }
