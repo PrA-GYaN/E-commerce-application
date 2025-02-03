@@ -20,6 +20,7 @@ export default function Categories() {
           throw new Error('Failed to fetch categories');
         }
         const data = await response.json();
+        console.log('Categories:', data);
         setCategories(data);
       } catch (err) {
         setError(err.message);

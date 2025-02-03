@@ -10,6 +10,8 @@ export async function addCategory(name, imageUrl) {
       name: name,
       image: imageUrl,
     });
+
+    console.log('Category added successfully:', newCategory);
   } catch (error) {
     console.error('Error adding category:', error);
     throw new Error('Failed to add category');

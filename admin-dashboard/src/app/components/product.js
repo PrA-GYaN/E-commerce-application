@@ -40,10 +40,10 @@ export default function Products() {
         const data = await response.json();
         console.log('Categories:', data);
         if(data.length === 0){
-          setCategories(data);
+          setCategories([]);
         }
         else{
-          setCategories([]);
+          setCategories(data);
         }
       } catch (err) {
         setError(err.message);
@@ -171,6 +171,7 @@ export default function Products() {
         editingProduct={editingProduct}
         products={products}
         setProducts={setProducts}
+        categories={categories}
       />
     </div>
   );

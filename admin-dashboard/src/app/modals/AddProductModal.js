@@ -3,7 +3,17 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/compone
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import axios from 'axios';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { Check, ChevronsUpDown } from "lucide-react";
+import axios from "axios";
 
 export default function AddProductModal({ isOpen, onClose, setProducts, categories }) {
   const [newProductName, setNewProductName] = useState("");
@@ -12,15 +22,14 @@ export default function AddProductModal({ isOpen, onClose, setProducts, categori
   const [newProductInitialStock, setNewProductInitialStock] = useState(0);
   const [newProductAvailableStock, setNewProductAvailableStock] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const { toast } = useToast(); // Use toast hook
+  const { toast } = useToast();
 
   const handleAddProduct = async () => {
-    // Validation checks
     if (!newProductName.trim()) {
       toast({
         title: "Validation Error",
         description: "Product name is required.",
-        variant: "destructive", // Destructive variant for errors
+        variant: "destructive",
       });
       return;
     }
@@ -29,7 +38,7 @@ export default function AddProductModal({ isOpen, onClose, setProducts, categori
       toast({
         title: "Validation Error",
         description: "Product description is required.",
-        variant: "destructive", // Destructive variant for errors
+        variant: "destructive",
       });
       return;
     }
@@ -38,7 +47,7 @@ export default function AddProductModal({ isOpen, onClose, setProducts, categori
       toast({
         title: "Validation Error",
         description: "Product image is required.",
-        variant: "destructive", // Destructive variant for errors
+        variant: "destructive",
       });
       return;
     }
@@ -47,7 +56,7 @@ export default function AddProductModal({ isOpen, onClose, setProducts, categori
       toast({
         title: "Validation Error",
         description: "Stock values must be positive.",
-        variant: "destructive", // Destructive variant for errors
+        variant: "destructive",
       });
       return;
     }
@@ -56,12 +65,11 @@ export default function AddProductModal({ isOpen, onClose, setProducts, categori
       toast({
         title: "Validation Error",
         description: "Please select a category for the product.",
-        variant: "destructive", // Destructive variant for errors
+        variant: "destructive",
       });
       return;
     }
 
-    // Prepare the form data to send to the backend
     const formData = new FormData();
     formData.append("name", newProductName);
     formData.append("description", newProductDescription);
@@ -71,16 +79,13 @@ export default function AddProductModal({ isOpen, onClose, setProducts, categori
     formData.append("categoryId", selectedCategory);
 
     try {
-      // Send the form data to the /api/addProduct route
       const response = await axios.post("/api/addProductsApi", formData, {
         headers: {
-          "Content-Type": "multipart/form-data", // This is required to send FormData
+          "Content-Type": "multipart/form-data",
         },
       });
 
-      const { imageUrl } = response.data; // Get the image URL from the response
-
-      // Add the product to the state (including the uploaded image URL)
+      const { imageUrl } = response.data;
       setProducts((prevProducts) => [
         ...prevProducts,
         {
@@ -97,7 +102,7 @@ export default function AddProductModal({ isOpen, onClose, setProducts, categori
       toast({
         title: "Success",
         description: "Product added successfully!",
-        variant: "success", // Success variant
+        variant: "success",
       });
 
       setNewProductName("");
@@ -106,13 +111,13 @@ export default function AddProductModal({ isOpen, onClose, setProducts, categori
       setNewProductInitialStock(0);
       setNewProductAvailableStock(0);
       setSelectedCategory("");
-      onClose(); // Close modal after adding the product
+      onClose();
     } catch (error) {
       console.error("Error uploading image or adding product:", error);
       toast({
         title: "Error",
         description: "Failed to add product. Please try again.",
-        variant: "destructive", // Destructive variant for errors
+        variant: "destructive",
       });
     }
   };
@@ -120,40 +125,18 @@ export default function AddProductModal({ isOpen, onClose, setProducts, categori
   const handleNewProductImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Check if the file is an image
       if (file.type.startsWith("image/")) {
         setNewProductImage(file);
       } else {
         toast({
           title: "Invalid File Type",
           description: "Please select a valid image file.",
-          variant: "destructive", // Destructive variant for errors
+          variant: "destructive",
         });
       }
     }
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setNewProductImage(file);
-    } else {
-      toast({
-        title: "Invalid File Type",
-        description: "Please drop a valid image file.",
-        variant: "destructive", // Destructive variant for errors
-      });
-    }
-  };
-
-  // Reference for the hidden input element
   const fileInputRef = useRef(null);
 
   const handleClickToUpload = () => {
@@ -164,7 +147,7 @@ export default function AddProductModal({ isOpen, onClose, setProducts, categori
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="max-h-[80vh] overflow-y-auto">
         <DialogTitle>Add New Product</DialogTitle>
         <DialogDescription>Enter the details for the new product below.</DialogDescription>
 
@@ -182,47 +165,72 @@ export default function AddProductModal({ isOpen, onClose, setProducts, categori
           className="w-full p-3 mt-4 border-2 border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
         />
 
-        <Input
-          type="number"
-          value={newProductInitialStock}
-          onChange={(e) => setNewProductInitialStock(Number(e.target.value))}
-          placeholder="Initial Stock"
-          className="w-full p-3 mt-4 border-2 border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-        />
+        <div className="mt-4">
+          <label className="block text-sm font-medium text-gray-700">Initial Stock</label>
+          <Input
+            type="number"
+            value={newProductInitialStock}
+            onChange={(e) => setNewProductInitialStock(Number(e.target.value))}
+            placeholder="Initial Stock"
+            className="w-full p-3 mt-2 border-2 border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-        <Input
-          type="number"
-          value={newProductAvailableStock}
-          onChange={(e) => setNewProductAvailableStock(Number(e.target.value))}
-          placeholder="Available Stock"
-          className="w-full p-3 mt-4 border-2 border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-        />
+        <div className="mt-4">
+          <label className="block text-sm font-medium text-gray-700">Available Stock</label>
+          <Input
+            type="number"
+            value={newProductAvailableStock}
+            onChange={(e) => setNewProductAvailableStock(Number(e.target.value))}
+            placeholder="Available Stock"
+            className="w-full p-3 mt-2 border-2 border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-        <select
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-          className="w-full p-3 mt-4 border-2 border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="" disabled>Select Category</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="w-full mt-4 justify-between">
+              {selectedCategory
+                ? categories.find((category) => category.id === selectedCategory)?.name
+                : "Select Category..."}
+              <ChevronsUpDown className="opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[200px] p-0">
+            <Command>
+              <CommandInput placeholder="Search categories..." className="h-9" />
+              <CommandList>
+                <CommandEmpty>No categories found.</CommandEmpty>
+                <CommandGroup>
+                  {categories.map((category) => (
+                    <CommandItem
+                      key={category.id}
+                      onSelect={() => {
+                        setSelectedCategory(category.id);
+                      }}
+                    >
+                      {category.name}
+                      <Check
+                        className={`ml-auto ${selectedCategory === category.id ? "opacity-100" : "opacity-0"}`}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
 
         <div
           className="w-full p-4 mt-4 border-2 border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 cursor-pointer"
-          onClick={handleClickToUpload} // Open file selection dialog on click
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
+          onClick={handleClickToUpload}
         >
           <input
             type="file"
-            ref={fileInputRef} // Reference to trigger click programmatically
+            ref={fileInputRef}
             onChange={handleNewProductImageChange}
             className="hidden"
-            accept="image/*" // Only allow image files
+            accept="image/*"
           />
           {!newProductImage ? (
             <p className="text-center text-gray-500">Drag & Drop or Click to Upload</p>
@@ -239,14 +247,11 @@ export default function AddProductModal({ isOpen, onClose, setProducts, categori
           <Button
             variant="outline"
             className="bg-gray-200 text-gray-800 hover:bg-gray-300"
-            onClick={onClose} // Close without saving
+            onClick={onClose}
           >
             Cancel
           </Button>
-          <Button
-            onClick={handleAddProduct}
-            className="bg-blue-600 text-white hover:bg-blue-700"
-          >
+          <Button onClick={handleAddProduct} className="bg-blue-600 text-white hover:bg-blue-700">
             Add Product
           </Button>
         </div>
