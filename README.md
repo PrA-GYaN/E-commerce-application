@@ -45,7 +45,6 @@ NEXT_PUBLIC_CLERK_FRONTEND_API=your-clerk-api-key
 SUPABASE_URL=your-supabase-url
 SUPABASE_ANON_KEY=your-supabase-anon-key
 DATABASE_URL=your-database-url
-NEXTAUTH_SECRET=your-secret-key
 ```
 
 ### **Run the Project**
@@ -56,7 +55,6 @@ npm run dev  # or yarn dev
 
 ## **Deployment**
 - The project is deployed on **Vercel**
-- **Live Demo:** [Insert Deployment Link]
 
 ## **Contributing**
 Feel free to fork this project and improve upon it. Contributions are welcome!
