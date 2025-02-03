@@ -29,8 +29,8 @@ export default function EditCategoryModal({ isOpen, onClose, editingCategory, ca
     const hasImageChanged = tempCategoryImage !== editCategoryImage;
 
     if (!hasNameChanged && !hasImageChanged) {
-      onClose(); // Close the modal if no changes have been made
-      return; // Return early to prevent the API call
+      onClose();
+      return; 
     }
   
     if (tempCategoryName.trim()) {

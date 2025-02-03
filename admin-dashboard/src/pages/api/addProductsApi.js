@@ -1,22 +1,19 @@
 import multer from "multer";
 import { uploadToCloudinary } from "@/utils/cloudinary";
-import { addProduct } from "@/actions/addProduct"; // Assuming you have an addProduct function to interact with your database
+import { addProduct } from "@/actions/addProduct";
 
-// Set up multer storage configuration (for handling files before uploading to Cloudinary)
-const storage = multer.memoryStorage(); // Use memoryStorage to keep the image buffer in memory
+const storage = multer.memoryStorage();
 
 const upload = multer({ storage });
 
 export const config = {
   api: {
-    bodyParser: false, // Disable Next.js body parsing to allow multer to process the form data
+    bodyParser: false,
   },
 };
 
 const handler = (req, res) => {
-  // If method is POST, handle file upload
   if (req.method === "POST") {
-    // Use multer to handle the incoming request and upload the file
     upload.single("image")(req, res, async (err) => {
       if (err) {
         return res.status(500).json({ error: "Error uploading image" });
@@ -27,14 +24,12 @@ const handler = (req, res) => {
       }
 
       try {
-        // Upload image to Cloudinary
-        const cloudinaryResult = await uploadToCloudinary(req.file.buffer); // Pass the file buffer
+        const cloudinaryResult = await uploadToCloudinary(req.file.buffer);
 
         if (!cloudinaryResult?.secure_url) {
           return res.status(500).json({ error: "Error uploading image to Cloudinary" });
         }
 
-        // Extract product details from the request body
         const { name, description, initialStock, availableStock, categoryId } = req.body;
 
         if (!name || name.trim() === "") {
@@ -47,9 +42,8 @@ const handler = (req, res) => {
           return res.status(400).json({ error: "Initial stock, available stock, and category are required" });
         }
 
-        const imageUrl = cloudinaryResult.secure_url; // Cloudinary URL of the uploaded image
+        const imageUrl = cloudinaryResult.secure_url;
 
-        // Add the product to the database
         await addProduct(name, description, imageUrl, initialStock, availableStock, categoryId);
 
         return res.status(200).json({ name, description, imageUrl, initialStock, availableStock, categoryId });
@@ -59,7 +53,6 @@ const handler = (req, res) => {
       }
     });
   } else {
-    // Return error if method is not POST
     res.status(405).json({ error: "Method Not Allowed" });
   }
 };

@@ -4,7 +4,7 @@ import {
   CardContent,
   CardHeader,
 } from "@/components/ui/card";
-import { FaCogs, FaUsers, FaChartLine } from 'react-icons/fa';
+import { FaCogs, FaChartLine ,FaBox} from 'react-icons/fa';
 
 export default function Welcome() {
   return (
@@ -14,22 +14,22 @@ export default function Welcome() {
           Welcome to the Admin Dashboard!
         </h2>
         <p className="mt-4 text-lg text-gray-600">
-          This is where you can manage users, settings, and other aspects of your platform.
+          This is where you can manage category, inventory, and other aspects of your platform.
         </p>
 
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card className="bg-gray-100 hover:bg-gray-200 transition duration-200 ease-in-out">
             <CardHeader>
               <div className="flex items-center">
-                <FaUsers className="text-4xl text-blue-500 mr-4" />
+                <FaCogs className="text-4xl text-blue-500 mr-4" />
                 <h3 className="text-xl font-semibold text-gray-800">
-                  Manage Users
+                Category Management
                 </h3>
               </div>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-500">
-                View and manage platform users.
+              Create, update, and delete categories with name and image.
               </p>
             </CardContent>
           </Card>
@@ -37,15 +37,15 @@ export default function Welcome() {
           <Card className="bg-gray-100 hover:bg-gray-200 transition duration-200 ease-in-out">
             <CardHeader>
               <div className="flex items-center">
-                <FaCogs className="text-4xl text-teal-500 mr-4" />
+                <FaBox className="text-4xl text-teal-500 mr-4" />
                 <h3 className="text-xl font-semibold text-gray-800">
-                  Platform Settings
+                Product Management
                 </h3>
               </div>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-500">
-                Customize the platform settings.
+              Admins can create, update, and delete products with details
               </p>
             </CardContent>
           </Card>

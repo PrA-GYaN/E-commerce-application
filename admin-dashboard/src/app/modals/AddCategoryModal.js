@@ -16,7 +16,7 @@ export default function AddCategoryModal({ isOpen, onClose, setCategories }) {
       toast({
         title: "Validation Error",
         description: "Category name is required.",
-        variant: "destructive", // Destructive variant for errors
+        variant: "destructive",
       });
       return;
     }
@@ -25,27 +25,24 @@ export default function AddCategoryModal({ isOpen, onClose, setCategories }) {
       toast({
         title: "Validation Error",
         description: "Category image is required.",
-        variant: "destructive", // Destructive variant for errors
+        variant: "destructive",
       });
       return;
     }
 
-    // Prepare the form data to send to the backend
     const formData = new FormData();
     formData.append("name", newCategory);
     formData.append("image", newCategoryImage);
 
     try {
-      // Send the form data to the /api/addCategory route
       const response = await axios.post("/api/addCategoriesApi", formData, {
         headers: {
-          "Content-Type": "multipart/form-data", // This is required to send FormData
+          "Content-Type": "multipart/form-data", 
         },
       });
 
-      const { imageUrl } = response.data; // Get the image URL from the response
+      const { imageUrl } = response.data;
 
-      // Add the category to the state (including the uploaded image URL)
       setCategories((prevCategories) => [
         ...prevCategories,
         { id: Date.now(), name: newCategory, image: imageUrl },
@@ -54,18 +51,18 @@ export default function AddCategoryModal({ isOpen, onClose, setCategories }) {
       toast({
         title: "Success",
         description: "Category added successfully!",
-        variant: "success", // Success variant
+        variant: "success", 
       });
 
       setNewCategory("");
       setNewCategoryImage(null);
-      onClose(); // Close modal after adding the category
+      onClose(); 
     } catch (error) {
       console.error("Error uploading image or adding category:", error);
       toast({
         title: "Error",
         description: "Failed to add category. Please try again.",
-        variant: "destructive", // Destructive variant for errors
+        variant: "destructive", 
       });
     }
   };
@@ -80,7 +77,7 @@ export default function AddCategoryModal({ isOpen, onClose, setCategories }) {
         toast({
           title: "Invalid File Type",
           description: "Please select a valid image file.",
-          variant: "destructive", // Destructive variant for errors
+          variant: "destructive", 
         });
       }
     }
@@ -101,7 +98,7 @@ export default function AddCategoryModal({ isOpen, onClose, setCategories }) {
       toast({
         title: "Invalid File Type",
         description: "Please drop a valid image file.",
-        variant: "destructive", // Destructive variant for errors
+        variant: "destructive", 
       });
     }
   };
@@ -130,7 +127,7 @@ export default function AddCategoryModal({ isOpen, onClose, setCategories }) {
 
         <div
           className="w-full p-4 mt-4 border-2 border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 cursor-pointer"
-          onClick={handleClickToUpload} // Open file selection dialog on click
+          onClick={handleClickToUpload}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
         >

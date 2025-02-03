@@ -36,7 +36,6 @@ export default function EditProductModal({
   
   const fileInputRef = useRef(null);
 
-  // Store initial values when the modal is opened
   useEffect(() => {
     if (editingProduct !== null && Array.isArray(products)) {
       const productToEdit = products.find((product) => product.id === editingProduct);
@@ -66,37 +65,31 @@ export default function EditProductModal({
       return;
     }
   
-    // Find the product to edit
+
     const productToEdit = products.find((product) => product.id === editingProduct);
     if (!productToEdit) return;
   
-    // Create a FormData object
     const formData = new FormData();
   
-    // Add fields to the formData object if they've been updated
     if (tempProductName !== productToEdit.name) formData.append('name', tempProductName);
     if (tempProductDescription !== productToEdit.description) formData.append('description', tempProductDescription);
     if (tempProductInitialStock !== productToEdit.initialStock) formData.append('initialStock', tempProductInitialStock);
     if (tempProductAvailableStock !== productToEdit.availableStock) formData.append('availableStock', tempProductAvailableStock);
     if (tempProductCategory !== productToEdit.categoryId) formData.append('categoryId', tempProductCategory);
-    
-    // Check for image change and append it if necessary
+
     if (tempProductImage && tempProductImage !== productToEdit.image) {
       const imageBlob = await fetch(tempProductImage).then((res) => res.blob());
           formData.append("image", imageBlob, "product-image.jpg");
     }
   
-    // If no fields have changed, just close the modal
     if (formData.entries().next().done) {
       onClose();
       return;
     }
-  
-    // Add the product ID to the formData
+
     formData.append('id', productToEdit.id);
   
     try {
-      // Call the API to update the product using multipart form data
       const response = await fetch("/api/editProductsApi", {
         method: "POST",
         body: formData,
@@ -109,7 +102,7 @@ export default function EditProductModal({
         setProducts(
           products.map((product) =>
             product.id === editingProduct
-              ? { ...product, ...result } // Dynamically merge fields from the API response
+              ? { ...product, ...result }
               : product
           )
         );

@@ -21,7 +21,7 @@ export default function Navbar({ onPageChange }) {
             onClick={() => onPageChange('welcome')}
             className="text-white hover:text-gray-400"
           >
-            Welcome
+            Home
           </button>
           <button
             onClick={() => onPageChange('categories')}
@@ -35,6 +35,12 @@ export default function Navbar({ onPageChange }) {
           >
             Products
           </button>
+          <button
+            onClick={() => onPageChange('analytics')}
+            className="text-white hover:text-gray-400"
+          >
+            Analytics
+          </button>
 
         {/* User Button (only if signed in) */}
         <div className="hidden md:block">
@@ -43,9 +49,7 @@ export default function Navbar({ onPageChange }) {
               <UserButton />
             </SignedIn>
             <SignedOut>
-              <Link href="/sign-in">
-                <a className="text-white hover:text-gray-400">Sign In</a>
-              </Link>
+              <Link href="/">Sign In</Link>
             </SignedOut>
           </ClerkProvider>
         </div>
@@ -103,6 +107,12 @@ export default function Navbar({ onPageChange }) {
             className="block text-white py-2 px-4 hover:bg-gray-700"
           >
             Products
+          </button>
+          <button
+            onClick={() => onPageChange('analytics')}
+            className="block text-white py-2 px-4 hover:bg-gray-700"
+          >
+            Analytics
           </button>
         </div>
       </div>

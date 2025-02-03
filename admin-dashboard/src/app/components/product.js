@@ -47,24 +47,54 @@ export default function Products() {
         }
       } catch (err) {
         setError(err.message);
-      } finally {
-        setLoading(false);
       }          
     };
     fetchProducts();
     fetchCategories();
   }, []);
 
-  // Handle editing a product
   const handleEditProduct = (id) => {
     setEditingProduct(id);
     setDialogOpen(true);
   };
 
-  // Handle deleting a product
+  const deleteProduct = async (productId) => {
+    try {
+      const response = await fetch(`/api/deleteProductsApi`,
+        {
+          method: "DELETE",
+          body: productId,
+        }
+      );
+      if (!response.ok) {
+        throw new Error('Failed to delete category');
+      }
+      const data = await response.json();
+      handleDeleteProduct(productId);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDeleteProduct = (id) => {
     setProducts((prevProducts) => prevProducts.filter((product) => product.id !== id));
   };
+
+  if (loading) {
+    return (
+      <div className="flex-col gap-4 w-full h-96 flex items-center justify-center">
+        <div
+          className="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-blue-400 rounded-full"
+        >
+          <div
+            className="w-16 h-16 border-4 border-transparent text-red-400 text-2xl animate-spin flex items-center justify-center border-t-red-400 rounded-full"
+          ></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-8 max-w-5xl mx-auto bg-gradient-to-r from-green-100 to-teal-200 rounded-xl shadow-lg">
@@ -146,7 +176,7 @@ export default function Products() {
                                 </Button>
                               </AlertDialogCancel>
                               <AlertDialogAction
-                                onClick={() => handleDeleteProduct(product.id)}
+                                onClick={() => deleteProduct(product.id)}
                                 className="bg-red-600 text-white hover:bg-red-700 px-6 py-2 rounded-md transition duration-200 ease-in-out"
                               >
                                 Confirm
