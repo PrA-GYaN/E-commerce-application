@@ -1,6 +1,6 @@
 "use client"; // This marks the file as a client component
 
-import { useState } from 'react'; // useState needs to be used in a client component
+import { useEffect, useState } from 'react'; // useState needs to be used in a client component
 import {
   ClerkProvider,
   SignInButton,
@@ -11,6 +11,17 @@ import {
 import { FaChartLine, FaCogs, FaUsers, FaSignInAlt } from 'react-icons/fa'; // Icons for features
 
 export default function Login() {
+  const [particles, setParticles] = useState([]);
+
+  useEffect(() => {
+    const newParticles = [...Array(20)].map(() => ({
+      top: `${Math.random() * 70}%`,
+      left: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 5}s`,
+    }));
+    setParticles(newParticles);
+  }, []);
+
   return (
     <>
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-purple-600 via-indigo-500 to-blue-400 animate-gradient-x">
@@ -94,16 +105,15 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Floating Particles Animation */}
       <div className="absolute inset-0 overflow-hidden z-0">
-        {[...Array(20)].map((_, i) => (
+        {particles.map((particle, i) => (
           <div
             key={i}
             className="absolute w-2 h-2 bg-white/30 rounded-full animate-float"
             style={{
-              top: `${Math.random() * 70}%`,  // particles will spawn within 70% of the height
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
+              top: particle.top,
+              left: particle.left,
+              animationDelay: particle.animationDelay,
             }}
           ></div>
         ))}
