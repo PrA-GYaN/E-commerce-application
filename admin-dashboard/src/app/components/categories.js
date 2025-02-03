@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import AddCategoryModal from "../modals/AddCategoryModal";
@@ -9,32 +9,54 @@ export default function Categories() {
   const [editingCategory, setEditingCategory] = useState(null);
   const [isAddCategoryModalOpen, setAddCategoryModalOpen] = useState(false);
   const [isDialogOpen, setDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/getCategoriesApi');
+        if (!response.ok) {
+          throw new Error('Failed to fetch categories');
+        }
+        const data = await response.json();
+        setCategories(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+  
+  // Handle editing a category
   const handleEditCategory = (id) => {
     setEditingCategory(id);
     setDialogOpen(true);
   };
 
+  // Handle deleting a category
   const handleDeleteCategory = (id) => {
-    setCategories(categories.filter((category) => category.id !== id));
+    setCategories((prevCategories) => prevCategories.filter((category) => category.id !== id));
   };
 
   return (
     <div className="p-8 max-w-5xl mx-auto bg-gradient-to-r from-blue-100 to-purple-200 rounded-xl shadow-lg">
-
       <div className="mt-8 flex flex-col gap-8">
         <div className="header flex flex-row align-center justify-between">
-        <h3 className="text-3xl font-semibold text-gray-800 tracking-tight">Categories</h3>
-        <div className="flex justify-end">
-        <Button
-          onClick={() => setAddCategoryModalOpen(true)}
-          className="bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 text-white px-8 py-3 rounded-lg shadow-xl transform hover:scale-105 transition duration-300 ease-in-out"
-        >
-          Add New Category
-        </Button>
-      </div>
+          <h3 className="text-3xl font-semibold text-gray-800 tracking-tight">Categories</h3>
+          <div className="flex justify-end">
+            <Button
+              onClick={() => setAddCategoryModalOpen(true)}
+              className="bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 text-white px-8 py-3 rounded-lg shadow-xl transform hover:scale-105 transition duration-300 ease-in-out"
+            >
+              Add New Category
+            </Button>
+          </div>
         </div>
-        
+
         {categories.length === 0 ? (
           <p className="text-center text-lg text-gray-600">No categories available. Add a new category to get started.</p>
         ) : (

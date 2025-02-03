@@ -3,13 +3,14 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/compone
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import axios from 'axios';
 
 export default function AddCategoryModal({ isOpen, onClose, setCategories }) {
   const [newCategory, setNewCategory] = useState("");
   const [newCategoryImage, setNewCategoryImage] = useState(null);
   const { toast } = useToast(); // Use toast hook
 
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     // Validation checks
     if (!newCategory.trim()) {
       toast({
@@ -29,23 +30,44 @@ export default function AddCategoryModal({ isOpen, onClose, setCategories }) {
       return;
     }
 
-    // If valid, proceed to add the category
-    const reader = new FileReader();
-    reader.onloadend = () => {
+    // Prepare the form data to send to the backend
+    const formData = new FormData();
+    formData.append("name", newCategory);
+    formData.append("image", newCategoryImage);
+
+    try {
+      // Send the form data to the /api/addCategory route
+      const response = await axios.post("/api/addCategoriesApi", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // This is required to send FormData
+        },
+      });
+
+      const { imageUrl } = response.data; // Get the image URL from the response
+
+      // Add the category to the state (including the uploaded image URL)
       setCategories((prevCategories) => [
         ...prevCategories,
-        { id: Date.now(), name: newCategory, image: reader.result },
+        { id: Date.now(), name: newCategory, image: imageUrl },
       ]);
+
       toast({
         title: "Success",
         description: "Category added successfully!",
         variant: "success", // Success variant
       });
+
       setNewCategory("");
       setNewCategoryImage(null);
       onClose(); // Close modal after adding the category
-    };
-    reader.readAsDataURL(newCategoryImage);
+    } catch (error) {
+      console.error("Error uploading image or adding category:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add category. Please try again.",
+        variant: "destructive", // Destructive variant for errors
+      });
+    }
   };
 
   const handleNewCategoryImageChange = (e) => {
